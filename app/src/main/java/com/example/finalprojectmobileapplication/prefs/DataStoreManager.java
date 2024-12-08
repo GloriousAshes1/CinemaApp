@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 public class DataStoreManager {
 
-    public static final String PREF_USER_INFOR = "PREF_USER_INFOR";
+    public static final String PREF_USER_INFO = "PREF_USER_INFO";
 
     private static DataStoreManager instance;
     private MySharedPreferences sharedPreferences;
@@ -33,11 +33,11 @@ public class DataStoreManager {
         if (user != null) {
             jsonUser = user.toJSon();
         }
-        DataStoreManager.getInstance().sharedPreferences.putStringValue(PREF_USER_INFOR, jsonUser);
+        DataStoreManager.getInstance().sharedPreferences.putStringValue(PREF_USER_INFO, jsonUser);
     }
 
     public static User getUser() {
-        String jsonUser = DataStoreManager.getInstance().sharedPreferences.getStringValue(PREF_USER_INFOR);
+        String jsonUser = DataStoreManager.getInstance().sharedPreferences.getStringValue(PREF_USER_INFO);
         if (!StringUtil.isEmpty(jsonUser)) {
             return new Gson().fromJson(jsonUser, User.class);
         }

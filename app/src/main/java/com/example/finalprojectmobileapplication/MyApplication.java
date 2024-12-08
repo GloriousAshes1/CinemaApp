@@ -2,6 +2,7 @@ package com.example.finalprojectmobileapplication;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.example.finalprojectmobileapplication.prefs.DataStoreManager;
 import com.example.finalprojectmobileapplication.prefs.DataStoreManager;
@@ -20,6 +21,12 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MY_PREFERENCES", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+
         DataStoreManager.init(getApplicationContext());
         FirebaseApp.initializeApp(this);
     }
