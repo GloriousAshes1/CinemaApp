@@ -1,0 +1,54 @@
+[versions]
+agp = "8.6.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseAuth = "23.1.0"
+firebaseDatabase = "21.0.0"
+core = "3.3.0"
+firebaseEncodersJson = "18.0.1"
+materialVersion = "1.13.0-alpha08"
+circleimageview = "3.1.0"
+circleindicator = "2.1.6"
+gson = "2.11.0"
+eventbus = "3.3.1"
+exoplayer = "2.19.1"
+flexbox = "3.0.0"
+paypalAndroidSdk = "2.16.0"
+firebaseBom = "33.7.0"
+coreVersion = "3.5.3"
+androidCore = "3.3.0"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "core" }
+firebase-encoders-json = { group = "com.google.firebase", name = "firebase-encoders-json", version.ref = "firebaseEncodersJson" }
+google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
+circleindicator = { group = "me.relex", name = "circleindicator", version.ref = "circleindicator" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventbus" }
+exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoplayer" }
+flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
+paypal-android-sdk = { group = "com.paypal.sdk", name = "paypal-android-sdk", version.ref = "paypalAndroidSdk" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "coreVersion" }
+android-core = { group = "com.google.zxing", name = "android-core", version.ref = "androidCore" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142264457363",
+    "project_id": "finalproject-d280f",
+    "storage_bucket": "finalproject-d280f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142264457363:android:bd2a371f2ea7da958d9566",
+        "android_client_info": {
+          "package_name": "com.example.finalprojectmobileapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnFoRHMVQXbW12_746A7TKtps_YwLmBPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
