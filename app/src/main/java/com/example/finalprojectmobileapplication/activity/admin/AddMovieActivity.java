@@ -163,6 +163,10 @@ public class AddMovieActivity extends BaseActivity {
             Toast.makeText(this, getString(R.string.msg_price_movie_require), Toast.LENGTH_SHORT).show();
         }
 
+        else if(Integer.parseInt(strPrice) == 0){
+            Toast.makeText(this, getString(R.string.minimum_price), Toast.LENGTH_SHORT).show();
+        }
+
         else if (StringUtil.isEmpty(strDate)) {
             Toast.makeText(this, getString(R.string.msg_date_movie_require), Toast.LENGTH_SHORT).show();
         }
@@ -204,12 +208,14 @@ public class AddMovieActivity extends BaseActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean duplicateFound = false;
                         String existMovieName = "";
+                        long existMovieId = 0;
                         showProgressDialog(false);
 
                         for(DataSnapshot movieSnapshot : snapshot.getChildren()){
                             existMovieName = movieSnapshot.child("name").getValue(String.class);
+                            existMovieId = movieSnapshot.child("id").getValue(Long.class);
 
-                            if(existMovieName != null && existMovieName.equals(strName)){
+                            if(existMovieName != null && existMovieName.equals(strName) && existMovieId != movie.getId()){
                                 duplicateFound = true;
                                 Toast.makeText(AddMovieActivity.this, getString(R.string.msg_duplicate_movie_name), Toast.LENGTH_SHORT).show();
                                 break;
@@ -219,7 +225,7 @@ public class AddMovieActivity extends BaseActivity {
                         if(!duplicateFound){
                             movieRef.child(String.valueOf(movie.getId())).updateChildren(map, (error, ref) -> {
                                         showProgressDialog(false);
-                                        Toast.makeText(AddMovieActivity.this, getString(R.string.msg_add_movie_successfully), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AddMovieActivity.this, getString(R.string.msg_edit_movie_successfully), Toast.LENGTH_SHORT).show();
                                         GlobalFunction.hideSoftKeyboard(AddMovieActivity.this);
                                     });
                         }

@@ -86,15 +86,17 @@ public class AddCategoryActivity extends BaseActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean duplicateFound = false;
-                        String existName = "";
+                        String existCategoryName = "";
+                        long existCategoryId = 0;
 
                         showProgressDialog(false);
 
                         //Check category's name duplicate
                         for(DataSnapshot categorySnapshot : snapshot.getChildren()){
-                            existName = categorySnapshot.child("name").getValue(String.class);
+                            existCategoryName = categorySnapshot.child("name").getValue(String.class);
+                            existCategoryId = categorySnapshot.child("id").getValue(Long.class);
 
-                            if(existName != null && existName.equals(strName)){
+                            if(existCategoryName != null && existCategoryName.equals(strName) && existCategoryId != category.getId()){
                                 Toast.makeText(AddCategoryActivity.this, getString(R.string.msg_duplicate_category_name), Toast.LENGTH_SHORT).show();
                                 duplicateFound = true;
                                 break;
@@ -137,7 +139,7 @@ public class AddCategoryActivity extends BaseActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean duplicateFound = false;
-                        String existName = "";
+                        String existCategoryName = "";
 
                         System.out.println("Add new category here 1 !!!");
 
@@ -145,9 +147,9 @@ public class AddCategoryActivity extends BaseActivity {
 
                         //Check category's name duplicate
                         for(DataSnapshot categorySnapshot : snapshot.getChildren()){
-                            existName = categorySnapshot.child("name").getValue(String.class);
+                            existCategoryName = categorySnapshot.child("name").getValue(String.class);
 
-                            if(existName != null && existName.equals(strName)){
+                            if(existCategoryName != null && existCategoryName.equals(strName)){
                                 Toast.makeText(AddCategoryActivity.this, getString(R.string.msg_duplicate_category_name), Toast.LENGTH_SHORT).show();
                                 duplicateFound = true;
                                 break;

@@ -70,8 +70,14 @@ public class AddFoodActivity extends BaseActivity {
         else if(StringUtil.isEmpty(strPrice)){
             Toast.makeText(this, getString(R.string.msg_price_food_require), Toast.LENGTH_SHORT).show();
         }
+        else if(Integer.parseInt(strPrice) < 20){
+            Toast.makeText(this, getString(R.string.minimum_price), Toast.LENGTH_SHORT).show();
+        }
         else if(StringUtil.isEmpty(strQuantity)){
             Toast.makeText(this, getString(R.string.msg_quantity_food_require), Toast.LENGTH_SHORT).show();
+        }
+        else if(Integer.parseInt(strQuantity) == 0){
+            Toast.makeText(this, getString(R.string.minimum_quantity), Toast.LENGTH_SHORT).show();
         }
         else{
             DatabaseReference foodRef = MyApplication.get(this).getFoodDatabaseReference();
@@ -89,12 +95,14 @@ public class AddFoodActivity extends BaseActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         boolean duplicateFound = false;
                         String existFoodName = "";
+                        long existFoodId = 0;
                         showProgressDialog(false);
 
                         for(DataSnapshot foodSnapshot : snapshot.getChildren()){
                             existFoodName = foodSnapshot.child("name").getValue(String.class);
+                            existFoodId = foodSnapshot.child("id").getValue(Long.class);
 
-                            if(existFoodName != null && existFoodName.equals(strName)){
+                            if(existFoodName != null && existFoodName.equals(strName) && existFoodId != food.getId()){
                                 duplicateFound = true;
                                 Toast.makeText(AddFoodActivity.this, getString(R.string.msg_duplicate_food_name), Toast.LENGTH_SHORT).show();
                                 break;

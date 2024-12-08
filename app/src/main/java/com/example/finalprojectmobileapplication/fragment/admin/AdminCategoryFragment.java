@@ -25,6 +25,7 @@ import com.example.finalprojectmobileapplication.model.Category;
 import com.example.finalprojectmobileapplication.util.StringUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -95,6 +96,9 @@ public class AdminCategoryFragment extends Fragment {
     }
 
     private void deleteCategoryItem(Category category){
+        DatabaseReference movieRef = MyApplication.get(getActivity()).getMovieDatabaseReference();
+        DatabaseReference categoryRef = MyApplication.get(getActivity()).getCategoryDatabaseReference();
+
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.msg_delete_title))
                 .setMessage(getString(R.string.msg_confirm_delete))
@@ -103,10 +107,39 @@ public class AdminCategoryFragment extends Fragment {
                         return;
                     }
 
-                    MyApplication.get(getActivity()).getCategoryDatabaseReference()
-                            .child(String.valueOf(category.getId())).removeValue((error, ref) -> {
-                                Toast.makeText(getActivity(), getString(R.string.msg_delete_category_successfully), Toast.LENGTH_SHORT).show();
-                            });
+                    movieRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean categoryWithMovie = false;
+                            long categoryId = 0;
+
+                            for(DataSnapshot movieSnapshot : snapshot.getChildren()){
+                                categoryId = movieSnapshot.child("categoryId").getValue(Long.class);
+
+                                if(categoryId == category.getId()){
+                                    categoryWithMovie = true;
+                                    Toast.makeText(getActivity(), getString(R.string.category_with_movie), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+
+                            if(!categoryWithMovie){
+                                categoryRef.child(String.valueOf(category.getId())).removeValue((error, ref) -> {
+                                    Toast.makeText(getActivity(), getString(R.string.msg_delete_category_successfully), Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+//                    categoryRef.child(String.valueOf(category.getId())).removeValue((error, ref) -> {
+//                                Toast.makeText(getActivity(), getString(R.string.msg_delete_category_successfully), Toast.LENGTH_SHORT).show();
+//                            });
                 })
                 .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
