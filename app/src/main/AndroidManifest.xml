@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -37,6 +44,15 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AddFoodActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AddMovieActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.AddCategoryActivity"
             android:exported="false" />
     </application>
 

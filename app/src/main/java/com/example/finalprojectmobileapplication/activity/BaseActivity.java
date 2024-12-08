@@ -15,8 +15,17 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        createProgressDialog();
+        createAlertDialog();
     }
 
+    public void createProgressDialog(){
+        progressDialog = new MaterialDialog.Builder(this)
+                .content(R.string.waiting_message)
+                .progress(true, 0)
+                .build();
+    }
 
     public void showProgressDialog(boolean value) {
         if (value) {
@@ -46,6 +55,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (progressDialog != null) {
             progressDialog.setCancelable(isCancel);
         }
+    }
+
+    public void createAlertDialog(){
+        alertDialog = new MaterialDialog.Builder(this)
+                .title(R.string.app_name)
+                .positiveText(R.string.action_ok)
+                .cancelable(false)
+                .build();
     }
 
     @Override

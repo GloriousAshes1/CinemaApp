@@ -23,6 +23,11 @@ paypalAndroidSdk = "2.16.0"
 firebaseBom = "33.7.0"
 coreVersion = "3.5.3"
 androidCore = "3.3.0"
+glide = "4.12.0"
+dialogs = "0.9.6.0"
+flowlayout = "0.4.1"
+zxingCore = "3.4.0"
+zxingEmbedded = "4.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -34,9 +39,9 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
-core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "core" }
+#core = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "core" }
 firebase-encoders-json = { group = "com.google.firebase", name = "firebase-encoders-json", version.ref = "firebaseEncodersJson" }
-google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+#google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
 circleindicator = { group = "me.relex", name = "circleindicator", version.ref = "circleindicator" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
@@ -45,8 +50,13 @@ exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", versio
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
 paypal-android-sdk = { group = "com.paypal.sdk", name = "paypal-android-sdk", version.ref = "paypalAndroidSdk" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "coreVersion" }
 android-core = { group = "com.google.zxing", name = "android-core", version.ref = "androidCore" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+material-dialogs = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "dialogs" }
+flowlayout = { group = "com.wefika", name = "flowlayout", version.ref = "flowlayout" }
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxingCore" }
+zxing-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingEmbedded" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -8,13 +8,16 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.example.finalprojectmobileapplication.activity.MainActivity;
 import com.example.finalprojectmobileapplication.activity.admin.AdminMainActivity;
+import com.example.finalprojectmobileapplication.listener.IGetDateListener;
+import com.example.finalprojectmobileapplication.model.RoomFirebase;
+import com.example.finalprojectmobileapplication.model.Seat;
+import com.example.finalprojectmobileapplication.model.TimeFirebase;
 import com.example.finalprojectmobileapplication.prefs.DataStoreManager;
 import com.example.finalprojectmobileapplication.util.StringUtil;
 import com.google.zxing.BarcodeFormat;
@@ -66,8 +69,6 @@ public class GlobalFunction {
         }
     }
 
-
-
     public static void gentQRCodeFromString(ImageView imageView, String id) {
         if (imageView == null) {
             return;
@@ -92,5 +93,75 @@ public class GlobalFunction {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<RoomFirebase> getListRooms() {
+        List<RoomFirebase> list = new ArrayList<>();
+        list.add(new RoomFirebase(1, "Phòng 1", getListTimes()));
+        list.add(new RoomFirebase(2, "Phòng 2", getListTimes()));
+        list.add(new RoomFirebase(3, "Phòng 3", getListTimes()));
+        list.add(new RoomFirebase(4, "Phòng 4", getListTimes()));
+        list.add(new RoomFirebase(5, "Phòng 5", getListTimes()));
+        list.add(new RoomFirebase(6, "Phòng 6", getListTimes()));
+        return list;
+    }
+
+    public static List<TimeFirebase> getListTimes() {
+        List<TimeFirebase> list = new ArrayList<>();
+        list.add(new TimeFirebase(1, "7AM - 8AM", getListSeats()));
+        list.add(new TimeFirebase(2, "8AM - 9AM", getListSeats()));
+        list.add(new TimeFirebase(3, "9AM - 10AM", getListSeats()));
+        list.add(new TimeFirebase(4, "10AM - 11AM", getListSeats()));
+        list.add(new TimeFirebase(5, "1PM - 2PM", getListSeats()));
+        list.add(new TimeFirebase(6, "2PM - 3PM", getListSeats()));
+        return list;
+    }
+
+    public static List<Seat> getListSeats() {
+        List<Seat> list = new ArrayList<>();
+        list.add(new Seat(1, "1", false));
+        list.add(new Seat(2, "2", false));
+        list.add(new Seat(3, "3", false));
+        list.add(new Seat(4, "4", false));
+        list.add(new Seat(5, "5", false));
+        list.add(new Seat(6, "6", false));
+        list.add(new Seat(7, "7", false));
+        list.add(new Seat(8, "8", false));
+        list.add(new Seat(9, "9", false));
+        list.add(new Seat(10, "10", false));
+        list.add(new Seat(11, "11", false));
+        list.add(new Seat(12, "12", false));
+        list.add(new Seat(13, "13", false));
+        list.add(new Seat(14, "14", false));
+        list.add(new Seat(15, "15", false));
+        list.add(new Seat(16, "16", false));
+        list.add(new Seat(17, "17", false));
+        list.add(new Seat(18, "18", false));
+        return list;
+    }
+
+    public static void showDatePicker(Context context, String currentDate, final IGetDateListener getDateListener) {
+        Calendar mCalendar = Calendar.getInstance();
+        int currentDay = mCalendar.get(Calendar.DATE);
+        int currentMonth = mCalendar.get(Calendar.MONTH);
+        int currentYear = mCalendar.get(Calendar.YEAR);
+        mCalendar.set(currentYear, currentMonth, currentDay);
+
+        if (!StringUtil.isEmpty(currentDate)) {
+            String[] split = currentDate.split("-");
+            currentDay = Integer.parseInt(split[0]);
+            currentMonth = Integer.parseInt(split[1]);
+            currentYear = Integer.parseInt(split[2]);
+            mCalendar.set(currentYear, currentMonth - 1, currentDay);
+        }
+
+        DatePickerDialog.OnDateSetListener callBack = (view, year, monthOfYear, dayOfMonth) -> {
+            String date = StringUtil.getDoubleNumber(dayOfMonth) + "-" + StringUtil.getDoubleNumber(monthOfYear + 1) + "-" + year;
+            getDateListener.getDate(date);
+        };
+        DatePickerDialog datePicker = new DatePickerDialog(context,
+                callBack, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH),
+                mCalendar.get(Calendar.DATE));
+        datePicker.show();
     }
 }
