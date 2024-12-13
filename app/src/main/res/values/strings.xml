@@ -13,18 +13,18 @@
     <string name="sign_in">Sign in</string>
     <string name="reset_password">Send password</string>
 
-    <string name="nav_home">Trang chủ</string>
-    <string name="nav_booking">Lịch sử đặt vé</string>
-    <string name="nav_user">Tài khoản</string>
+    <string name="nav_home">Home page</string>
+    <string name="nav_booking">Booking History</string>
+    <string name="nav_user">Account</string>
 
     <!--Admin-->
-    <string name="nav_admin_category">Thể loại</string>
-    <string name="nav_admin_food_drink">Đồ ăn/uống</string>
-    <string name="nav_admin_movie">Phim</string>
-    <string name="nav_admin_booking">Lịch sử</string>
-    <string name="nav_admin_manage">Quản lý</string>
+    <string name="nav_admin_category">Type</string>
+    <string name="nav_admin_food_drink">Food/Drink</string>
+    <string name="nav_admin_movie">Movie</string>
+    <string name="nav_admin_booking">History</string>
+    <string name="nav_admin_manage">Management</string>
 
-    <string name="hint_search_movie">Tên phim…</string>
+    <string name="hint_search_movie">Movie name…</string>
     <string name="hint_password_old">Mật khẩu cũ…</string>
     <string name="hint_password_new">Mật khẩu mới…</string>
     <string name="hint_password_confirm">Xác nhận mật khẩu mới…</string>
@@ -58,12 +58,12 @@
     <string name="time_movie">Giờ chiếu:</string>
     <string name="add_movie_title">Thêm phim mới</string>
     <string name="edit_movie_title">Chỉnh sửa thông tin phim</string>
-    <string name="movie_detail">Chi tiết phim </string>
+    <string name="movie_detail">Movie Detail </string>
     <string name="all_room">Tất cả phòng </string>
     <string name="all_time">Mọi khung giờ </string>
     <string name="watch_trailer">Xem Trailer </string>
-    <string name="description_movie">Mô tả phim </string>
-    <string name="infor_movie">Thông tin chiếu phim </string>
+    <string name="description_movie">Movie Description</string>
+    <string name="infor_movie">Movie Information </string>
     <string name="video_trailer">Video Trailer </string>
     <string name="select_room">Chọn phòng chiếu phim</string>
     <string name="select_time">Chọn giờ chiếu phim</string>
@@ -73,7 +73,7 @@
     <string name="booking">Đặt vé</string>
     <string name="count">Số lượng</string>
     <string name="confirm_booking_infor">Xác nhận thông tin đặt vé</string>
-    <string name="movie_name">Tên phim:</string>
+    <string name="movie_name">Movie Name:</string>
     <string name="label_email">Email:</string>
     <string name="label_id">Mã:</string>
     <string name="count_booking_label">Số lượng vé:</string>
@@ -88,30 +88,30 @@
     <string name="select_category">Chọn thể loại (*)</string>
     <string name="label_category">Thể loại:</string>
     <string name="category">Thể loại</string>
-    <string name="label_all_movies">Tất cả phim</string>
-    <string name="label_movie_popular">Phim phổ biến nhất</string>
-    <string name="label_list_category">Thể loại</string>
-    <string name="label_all">Tất cả</string>
-    <string name="confirm_booking">Xác nhận đặt vé</string>
-    <string name="confirm">Xác nhận</string>
-    <string name="payment_method">Phương thức thanh toán</string>
-    <string name="label_payment">Thanh toán:</string>
-    <string name="label_date_create">Ngày:</string>
+    <string name="label_all_movies">All the movies</string>
+    <string name="label_movie_popular">Most popular movie</string>
+    <string name="label_list_category">Movie type</string>
+    <string name="label_all">All</string>
+    <string name="confirm_booking">Booking Confirmation</string>
+    <string name="confirm">Confirm</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="label_payment">Payment:</string>
+    <string name="label_date_create">Date:</string>
     <string name="quantity_stock">Hiện tại còn:</string>
-    <string name="request_qr">Quét QR Code</string>
-    <string name="revenue">Doanh thu</string>
-    <string name="label_total_revenue">Tổng doanh thu:</string>
+    <string name="request_qr">QR Code scanning:</string>
+    <string name="revenue">Revenue</string>
+    <string name="label_total_revenue">Total Revenue:</string>
     <string name="column_stt">STT</string>
-    <string name="column_movie_name">Tên phim</string>
-    <string name="column_quantity">Số lượng vé</string>
-    <string name="column_total_amount">Tổng Tiền</string>
-    <string name="label_booking_used">Vé đã sử dụng</string>
-    <string name="label_confirm_booking">Xác nhận vé</string>
+    <string name="column_movie_name">Movie name</string>
+    <string name="column_quantity">Ticket quantity</string>
+    <string name="column_total_amount">Total</string>
+    <string name="label_booking_used">Used Ticket</string>
+    <string name="label_confirm_booking">Ticket Confirmation</string>
 
-    <string name="action_ok">Đồng ý</string>
-    <string name="action_cancel">Hủy</string>
-    <string name="action_add">Thêm</string>
-    <string name="action_edit">Chỉnh sửa</string>
+    <string name="action_ok">Ok</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_add">Add</string>
+    <string name="action_edit">Edit</string>
 
 
     <string name="msg_confirm_login_another_device">Bạn có chắc chắn muốn thoát ứng dụng?</string>
@@ -172,4 +172,6 @@
     <string name="minimum_price">Số tiền nhập phải có giá trị từ 20 000 VNĐ trở lên</string>
     <string name="minimum_quantity">Số lượng phải có trị lớn hơn 0</string>
     <string name="category_with_movie">Không thể xóa thể loại phim này do có phim đã mang thể loại này</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

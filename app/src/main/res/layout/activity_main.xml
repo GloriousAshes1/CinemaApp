@@ -32,6 +32,5 @@
         android:background="@color/colorPrimaryDark"
         app:itemIconTint="@color/custom_bottom_navigation"
         app:itemTextColor="@color/custom_bottom_navigation"
-        app:menu="@menu/menu_bottom_navigation"
-        />
+        app:menu="@menu/menu_bottom_navigation" />
 </RelativeLayout>

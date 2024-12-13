@@ -20,6 +20,7 @@ public class AdminCategoryAdapter extends RecyclerView.Adapter<AdminCategoryAdap
         void editCategory(Category category);
 
         void deleteCategory(Category category);
+
     }
 
     public AdminCategoryAdapter(List<Category>categoryList, IManagerCategoryListener iManagerCategoryListener){

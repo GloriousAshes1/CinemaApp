@@ -21,6 +21,15 @@
         android:theme="@style/Theme.FinalProjectMobileApplication"
         tools:targetApi="31">
         <activity
+            android:name=".activity.MovieDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CategoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.admin.AdminMainActivity"
             android:exported="false" />
         <activity

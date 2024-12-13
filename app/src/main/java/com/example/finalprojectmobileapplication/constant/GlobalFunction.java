@@ -13,8 +13,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.example.finalprojectmobileapplication.activity.MainActivity;
+import com.example.finalprojectmobileapplication.activity.MovieDetailActivity;
+import com.example.finalprojectmobileapplication.activity.SearchActivity;
 import com.example.finalprojectmobileapplication.activity.admin.AdminMainActivity;
 import com.example.finalprojectmobileapplication.listener.IGetDateListener;
+import com.example.finalprojectmobileapplication.model.Movie;
 import com.example.finalprojectmobileapplication.model.RoomFirebase;
 import com.example.finalprojectmobileapplication.model.Seat;
 import com.example.finalprojectmobileapplication.model.TimeFirebase;
@@ -163,5 +166,11 @@ public class GlobalFunction {
                 callBack, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH),
                 mCalendar.get(Calendar.DATE));
         datePicker.show();
+    }
+
+    public static void goToMovieDetail(Context context, Movie movie) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ConstantKey.KEY_INTENT_MOVIE_OBJECT, movie);
+        GlobalFunction.startActivity(context, MovieDetailActivity.class, bundle);
     }
 }
