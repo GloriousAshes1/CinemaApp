@@ -106,7 +106,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable(ConstantKey.KEY_INTENT_MOVIE_OBJECT, mMovie);
-//        GlobalFunction.startActivity(this, ConfirmBookingActivity.class, bundle);
+        GlobalFunction.startActivity(this, ConfirmBookingActivity.class, bundle);
     }
 
     private void scrollToLayoutTrailer() {

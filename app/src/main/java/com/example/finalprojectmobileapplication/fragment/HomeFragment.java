@@ -19,8 +19,10 @@ import com.example.finalprojectmobileapplication.activity.CategoryActivity;
 //import com.example.finalprojectmobileapplication.activity.SearchActivity;
 //import com.example.finalprojectmobileapplication.adapter.BannerMovieAdapter;
 import com.example.finalprojectmobileapplication.activity.SearchActivity;
+import com.example.finalprojectmobileapplication.adapter.BannerMovieAdapter;
 import com.example.finalprojectmobileapplication.adapter.CategoryAdapter;
 //import com.example.finalprojectmobileapplication.adapter.MovieAdapter;
+import com.example.finalprojectmobileapplication.adapter.MovieAdapter;
 import com.example.finalprojectmobileapplication.constant.ConstantKey;
 import com.example.finalprojectmobileapplication.constant.GlobalFunction;
 import com.example.finalprojectmobileapplication.databinding.FragmentHomeBinding;
@@ -41,7 +43,7 @@ public class HomeFragment extends Fragment {
     private List<Movie> mListMovieBanner;
     private List<Category> mListCategory;
 
-    private final Handler mHanderBanner = new Handler(Looper.getMainLooper());
+    private final Handler mHandlerBanner = new Handler(Looper.getMainLooper());
     private final Runnable mRunnableBanner = new Runnable() {
         @Override
         public void run() {
@@ -60,10 +62,9 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-//        View v = inflater.inflate(R.layout.fragment_home, container, false);
         mFragmentHomeBinding = FragmentHomeBinding.inflate(inflater, container, false);
 
-//        getListMovies();
+        getListMovies();
         getListCategory();
         initListener();
 
@@ -112,13 +113,76 @@ public class HomeFragment extends Fragment {
         mFragmentHomeBinding.rcvCategory.setAdapter(categoryAdapter);
     }
 
-//    private void getListMovies() {
-//        if (getActivity() == null) {
-//            return;
-//        }
-//        MyApplication.get(getActivity().getMovieDatabaseReference().addValueEventListener(new ValueEventListener()))
-//    }
+    private void getListMovies() {
+        if (getActivity() == null) {
+            return;
+        }
+        MyApplication.get(getActivity()).getMovieDatabaseReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(mListMovie != null){
+                    mListMovie.clear();
+                }else {
+                    mListMovie = new ArrayList<>();
+                }
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Movie movie = dataSnapshot.getValue(Movie.class);
+                    if(movie != null){
+                        mListMovie.add(0, movie);
+                    }
+                }
+                displayListBannerMovies();
+                displayListAllMovies();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
+    private void displayListAllMovies() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        mFragmentHomeBinding.rcvMovie.setLayoutManager(gridLayoutManager);
+        MovieAdapter movieAdapter = new MovieAdapter(mListMovie,
+                movie -> GlobalFunction.goToMovieDetail(getActivity(), movie));
+        mFragmentHomeBinding.rcvMovie.setAdapter(movieAdapter);
+    }
+
+    private void displayListBannerMovies() {
+        BannerMovieAdapter bannerMovieAdapter = new BannerMovieAdapter(getListBannerMovies(),
+                movie -> GlobalFunction.goToMovieDetail(getActivity(), movie));
+        mFragmentHomeBinding.viewPager2.setAdapter(bannerMovieAdapter);
+        mFragmentHomeBinding.indicator3.setViewPager(mFragmentHomeBinding.viewPager2);
+
+        mFragmentHomeBinding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mHandlerBanner.removeCallbacks(mRunnableBanner);
+                mHandlerBanner.postDelayed(mRunnableBanner, 3000);
+            }
+        });
+    }
+
+    private List<Movie> getListBannerMovies(){
+        if (mListMovieBanner != null) {
+            mListMovieBanner.clear();
+        } else {
+            mListMovieBanner = new ArrayList<>();
+        }
+        if (mListMovie == null || mListMovie.isEmpty()) {
+            return mListMovieBanner;
+        }
+        List<Movie> listClone = new ArrayList<>(mListMovie);
+        listClone.sort((movie1, movie2) -> movie2.getBooked() - movie1.getBooked());
+
+        for (Movie movie : listClone) {
+            if (mListMovieBanner.size() < MAX_BANNER_SIZE) {
+                mListMovieBanner.add(movie);
+            }
+        }
+        return mListMovieBanner;
+    }
 
 }

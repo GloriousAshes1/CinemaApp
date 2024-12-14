@@ -10,15 +10,13 @@ import com.example.finalprojectmobileapplication.R;
 import com.example.finalprojectmobileapplication.constant.GlobalFunction;
 import com.example.finalprojectmobileapplication.databinding.ActivityLoginBinding;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.finalprojectmobileapplication.model.User;
 import com.example.finalprojectmobileapplication.prefs.DataStoreManager;
 import com.example.finalprojectmobileapplication.util.StringUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends BaseActivity {
+public class SignInActivity extends BaseActivity {
     private ActivityLoginBinding activityLoginBinding;
 
     @Override
@@ -30,7 +28,7 @@ public class LoginActivity extends BaseActivity {
         activityLoginBinding.rdbUser.setChecked(true);
 
         activityLoginBinding.layoutSignUp.setOnClickListener(
-                v -> GlobalFunction.startActivity(LoginActivity.this, SignUpActivity.class));
+                v -> GlobalFunction.startActivity(SignInActivity.this, SignUpActivity.class));
 
         activityLoginBinding.btnLogin.setOnClickListener(v -> onClickValidateSignIn());
         activityLoginBinding.tvForgotPassword.setOnClickListener(v -> onClickForgotPassword());
@@ -43,15 +41,15 @@ public class LoginActivity extends BaseActivity {
         String strEmail = activityLoginBinding.edtEmail.getText().toString().trim();
         String strPassword = activityLoginBinding.edtPassword.getText().toString().trim();
         if (StringUtil.isEmpty(strEmail)) {
-            Toast.makeText(LoginActivity.this, getString(R.string.msg_email_require), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignInActivity.this, getString(R.string.msg_email_require), Toast.LENGTH_SHORT).show();
         } else if (StringUtil.isEmpty(strPassword)) {
-            Toast.makeText(LoginActivity.this, getString(R.string.msg_password_require), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignInActivity.this, getString(R.string.msg_password_require), Toast.LENGTH_SHORT).show();
         } else if (!StringUtil.isValidEmail(strEmail)) {
-            Toast.makeText(LoginActivity.this, getString(R.string.msg_email_invalid), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignInActivity.this, getString(R.string.msg_email_invalid), Toast.LENGTH_SHORT).show();
         } else {
             if (activityLoginBinding.rdbAdmin.isChecked()) {
                 if (!strEmail.contains(ADMIN_EMAIL_FORMAT)) {
-                    Toast.makeText(LoginActivity.this, getString(R.string.msg_email_invalid_admin), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInActivity.this, getString(R.string.msg_email_invalid_admin), Toast.LENGTH_SHORT).show();
                 } else {
                     signInUser(strEmail, strPassword);
                 }
@@ -59,7 +57,7 @@ public class LoginActivity extends BaseActivity {
             }
 
             if (strEmail.contains(ADMIN_EMAIL_FORMAT)) {
-                Toast.makeText(LoginActivity.this, getString(R.string.msg_email_invalid_user), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this, getString(R.string.msg_email_invalid_user), Toast.LENGTH_SHORT).show();
             } else {
                 signInUser(strEmail, strPassword);
             }
@@ -84,7 +82,7 @@ public class LoginActivity extends BaseActivity {
                             finishAffinity();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, getString(R.string.msg_sign_in_error),
+                        Toast.makeText(SignInActivity.this, getString(R.string.msg_sign_in_error),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
