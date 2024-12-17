@@ -27,6 +27,7 @@ import com.example.finalprojectmobileapplication.adapter.TimeAdapter;
 import com.example.finalprojectmobileapplication.constant.ConstantKey;
 import com.example.finalprojectmobileapplication.constant.PayPalConfig;
 import com.example.finalprojectmobileapplication.databinding.ActivityConfirmBookingBinding;
+import com.example.finalprojectmobileapplication.listener.IOnSingleClickListener;
 import com.example.finalprojectmobileapplication.model.BookingHistory;
 import com.example.finalprojectmobileapplication.model.Food;
 import com.example.finalprojectmobileapplication.model.Movie;
@@ -37,6 +38,7 @@ import com.example.finalprojectmobileapplication.model.Seat;
 import com.example.finalprojectmobileapplication.model.SeatLocal;
 import com.example.finalprojectmobileapplication.model.SlotTime;
 import com.example.finalprojectmobileapplication.model.TimeFirebase;
+import com.example.finalprojectmobileapplication.prefs.DataStoreManager;
 import com.example.finalprojectmobileapplication.util.StringUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -434,7 +436,9 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         final TextView tvCountSeat = mDialog.findViewById(R.id.tv_count_seat);
 
         //Get food, payment method view
-        //...
+        final TextView tvFoodDrink = mDialog.findViewById(R.id.tv_food_drink);
+        final TextView tvPaymentMethod = mDialog.findViewById(R.id.tv_payment_method);
+        final TextView tvTotalAmount = mDialog.findViewById(R.id.tv_total_amount);
 
 
         final TextView tvDialogCancel = mDialog.findViewById(R.id.tv_dialog_cancel);
@@ -442,7 +446,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
         //Set data
         int countView = getListSeatChecked().size();
-
+        mListFoodNeedUpdate = new ArrayList<>(getListFoodSelected());
 
         //
         tvNameMovie.setText(mMovie.getName());
@@ -451,8 +455,107 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         tvTimeMovie.setText(getTitleTimeSelected());
         tvCountBooking.setText(String.valueOf(countView));
         tvCountSeat.setText(getStringSeatChecked());
+        tvFoodDrink.setText(getStringFoodAndDrink());
+        tvPaymentMethod.setText(mPaymentMethodSelected.getName());
+        String strTotalAmount = getTotalAmount() + ConstantKey.UNIT_CURRENCY;
+        tvTotalAmount.setText(strTotalAmount);
+
+        // Set listener nut cancel
+        tvDialogCancel.setOnClickListener(new IOnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+
+        // set listener nut OK
+        tvDialogOk.setOnClickListener(new IOnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                long id = System.currentTimeMillis();
+                mBookingHistory = new BookingHistory(id, mMovie.getId(), mMovie.getName(),
+                        mMovie.getDate(), getTitleRoomSelected(), getTitleTimeSelected(),
+                        tvCountBooking.getText().toString(), getStringSeatChecked(),
+                        getStringFoodAndDrink(), mPaymentMethodSelected.getName(),
+                        getTotalAmount(), DataStoreManager.getUser().getEmail(), false);
+
+                if (ConstantKey.PAYMENT_CASH == mPaymentMethodSelected.getType()) {
+                    sendRequestOrder();
+                } else {
+//                    getPaymentPaypal(getTotalAmount());
+                }
+            }
+        });
+        mDialog.show();
+    }
 
 
+    private void sendRequestOrder() {
+    }
+
+    private void updateQuantityFoodDrink() {
+        if (mListFoodNeedUpdate == null || mListFoodNeedUpdate.isEmpty()) {
+            return;
+        }
+        for (Food food : mListFoodNeedUpdate) {
+            changeQuantity(food.getId(), food.getCount());
+        }
+    }
+
+    // thay doi stock cua food and drink len firebase
+    private void changeQuantity(long foodId, int quantity) {
+        MyApplication.get(this).getQuantityDatabaseReference(foodId)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // lay so luong hien tai co trong csdl
+                        Integer currentQuantity = snapshot.getValue(Integer.class);
+                        if (currentQuantity != null) {
+                            int totalQuantity = currentQuantity - quantity;
+                            if (totalQuantity < 0) {
+                                totalQuantity = 0;
+                            }
+                            MyApplication.get(ConfirmBookingActivity.this).getQuantityDatabaseReference(foodId).removeEventListener(this);
+                            MyApplication.get(ConfirmBookingActivity.this).getQuantityDatabaseReference(foodId).setValue(totalQuantity);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+    }
+
+    private List<Food> getListFoodSelected() {
+        List<Food> listFoodSelected = new ArrayList<>();
+        if (mListFood != null) {
+            for (Food food : mListFood) {
+                if (food.getCount() > 0) {
+                    listFoodSelected.add(food);
+                }
+            }
+        }
+        return listFoodSelected;
+    }
+
+    private String getStringFoodAndDrink() {
+        String result = "";
+        List<Food> listFoodSelected = getListFoodSelected();
+        if (listFoodSelected.isEmpty()) {
+            return "No";
+        }
+        for (Food food : listFoodSelected) {
+            if (StringUtil.isEmpty(result)) {
+                result = food.getName() + " (" + food.getPrice()
+                        + ConstantKey.UNIT_CURRENCY + ")"
+                        + " - Quantity: " + food.getCount();
+            } else {
+                result = result + "\n"
+                        + food.getName() + " (" + food.getPrice()
+                        + ConstantKey.UNIT_CURRENCY + ")"
+                        + " - Quantity: " + food.getCount();
+            }
+        }
+        return result;
     }
 
 

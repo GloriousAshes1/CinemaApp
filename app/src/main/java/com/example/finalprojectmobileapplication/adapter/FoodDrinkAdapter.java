@@ -76,8 +76,6 @@ public class FoodDrinkAdapter extends RecyclerView.Adapter<FoodDrinkAdapter.Food
                 }
             }
         });
-
-
     }
 
     @Override
