@@ -1,28 +1,37 @@
 package com.example.finalprojectmobileapplication.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.finalprojectmobileapplication.MyApplication;
 import com.example.finalprojectmobileapplication.R;
+import com.example.finalprojectmobileapplication.adapter.FoodDrinkAdapter;
 import com.example.finalprojectmobileapplication.adapter.RoomAdapter;
 import com.example.finalprojectmobileapplication.adapter.SeatAdapter;
+import com.example.finalprojectmobileapplication.adapter.SelectPaymentAdapter;
 import com.example.finalprojectmobileapplication.adapter.TimeAdapter;
 import com.example.finalprojectmobileapplication.constant.ConstantKey;
 import com.example.finalprojectmobileapplication.constant.GlobalFunction;
@@ -50,6 +59,10 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +91,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
     //Food and drink
     private List<Food> mListFood;
-//    private FoodDrinkAdapter mFoodDrinkAdapter;
+    private FoodDrinkAdapter mFoodDrinkAdapter;
 //
     private List<Food> mListFoodNeedUpdate;
 
@@ -119,7 +132,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
                         displayDataMovie();
                         initListener();
-//                        initSpinnerCategory();
+                        initSpinnerCategory();
                     }
 
                     @Override
@@ -128,6 +141,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
 
     private void displayDataMovie() {
@@ -140,10 +154,40 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         String strPrice = mMovie.getPrice() + ConstantKey.UNIT_CURRENCY_MOVIE;
         mActivityConfirmBookingBinding.tvMoviePrice.setText(strPrice);
 
-        //Hiển danh sách các phòng
+        //Hiển danh sách các phòng, thức ăn và hình thức thanh toán
         showListRooms();
+        initListFoodAndDrink();
+        initSpinnerCategory();
+    }
 
-//        initListFoodAndDrink();
+    private void initSpinnerCategory() {
+        List<PaymentMethod> list = new ArrayList<>();
+        list.add(new PaymentMethod(ConstantKey.PAYMENT_CASH, ConstantKey.PAYMENT_CASH_TITLE));
+        list.add(new PaymentMethod(ConstantKey.PAYMENT_PAYPAL, ConstantKey.PAYMENT_PAYPAL_TITLE));
+
+        SelectPaymentAdapter selectPaymentAdapter = new SelectPaymentAdapter(this, R.layout.item_choose_option, list);
+        mActivityConfirmBookingBinding.spnPayment.setAdapter(selectPaymentAdapter);
+        mActivityConfirmBookingBinding.spnPayment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // chon hinh thuc thanh toan
+                mPaymentMethodSelected = selectPaymentAdapter.getItem(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void initListFoodAndDrink() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mActivityConfirmBookingBinding.rcvFoodDrink.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration decoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        mActivityConfirmBookingBinding.rcvFoodDrink.addItemDecoration(decoration);
+
+        getListFoodAndDrink();
     }
 
     private void initListener() {
@@ -419,7 +463,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         return 0;
     }
 
-    private void showDialogConfirmBooking(){
+    private void showDialogConfirmBooking() {
         mDialog = new Dialog(this);
         mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mDialog.setContentView(R.layout.layout_dialog_confirm_booking);
@@ -483,13 +527,12 @@ public class ConfirmBookingActivity extends AppCompatActivity {
                 if (ConstantKey.PAYMENT_CASH == mPaymentMethodSelected.getType()) {
                     sendRequestOrder();
                 } else {
-//                    getPaymentPaypal(getTotalAmount());
+                    getPaymentPaypal(getTotalAmount());
                 }
             }
         });
         mDialog.show();
     }
-
 
     private void sendRequestOrder() {
         mMovie.setBooked(mMovie.getBooked() + Integer.parseInt(mBookingHistory.getCount()));
@@ -540,6 +583,43 @@ public class ConfirmBookingActivity extends AppCompatActivity {
                 });
     }
 
+    private void getListFoodAndDrink() {
+        MyApplication.get(this).getFoodDatabaseReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (mListFood != null) {
+                    mListFood.clear();
+                } else {
+                    mListFood = new ArrayList<>();
+                }
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Food food = dataSnapshot.getValue(Food.class);
+                    if (food != null && food.getQuantity() > 0) {
+                        mListFood.add(0, food);
+                    }
+                }
+                mFoodDrinkAdapter = new FoodDrinkAdapter(mListFood, (food, count) -> selectedCountFoodAndDrink(food, count));
+                mActivityConfirmBookingBinding.rcvFoodDrink.setAdapter(mFoodDrinkAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void selectedCountFoodAndDrink(Food food, int count) {
+        if (mListFood == null || mListFood.isEmpty()) {
+            return;
+        }
+        for (Food foodEntity : mListFood) {
+            if (foodEntity.getId() == food.getId()) {
+                foodEntity.setCount(count);
+                break;
+            }
+        }
+    }
+
     private List<Food> getListFoodSelected() {
         List<Food> listFoodSelected = new ArrayList<>();
         if (mListFood != null) {
@@ -573,5 +653,59 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         return result;
     }
 
+    private void getPaymentPaypal(int price) {
+//    Create paypal payment
+        PayPalPayment payment = new PayPalPayment(new BigDecimal(String.valueOf(price)),
+                PayPalConfig.PAYPAL_CURRENCY, PayPalConfig.PAYPAl_CONTENT_TEXT,
+                PayPalPayment.PAYMENT_INTENT_SALE);
 
+//    Create Paypal payment activity intent
+        Intent intent = new Intent(this, PaymentActivity.class);
+
+//    Putting the paypal configuration to the intent
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,PAYPAL_CONFIG);
+
+//    Start the activity for result, this will send and receive the request code
+//    Request code will be used in the method onActivityResult
+        startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+            boolean isPaymentSuccess = false;
+
+            //If the result is OK i.e. user has not canceled the payment
+            if (resultCode == Activity.RESULT_OK) {
+                //Getting the payment confirmation
+                PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+
+                //if confirmation is not null
+                if (confirm != null) {
+                    try {
+                        //Getting the payment details
+                        String paymentDetails = confirm.toJSONObject().toString(4);
+                        Log.e("Payment Result", paymentDetails);
+
+                        JSONObject jsonDetails = new JSONObject(paymentDetails);
+                        JSONObject jsonResponse = jsonDetails.getJSONObject("response");
+                        String strState = jsonResponse.getString("state");
+                        Log.e("Payment State", strState);
+                        if (PAYPAL_PAYMENT_STATUS_APPROVED.equals(strState)) {
+                            isPaymentSuccess = true;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.msg_payment_error), Toast.LENGTH_SHORT).show();
+            }
+
+            // Send result payment
+            if (isPaymentSuccess) sendRequestOrder();
+        }
+    }
 }
