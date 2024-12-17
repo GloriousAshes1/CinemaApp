@@ -2,8 +2,14 @@ package com.example.finalprojectmobileapplication.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -31,6 +37,7 @@ import com.example.finalprojectmobileapplication.model.Seat;
 import com.example.finalprojectmobileapplication.model.SeatLocal;
 import com.example.finalprojectmobileapplication.model.SlotTime;
 import com.example.finalprojectmobileapplication.model.TimeFirebase;
+import com.example.finalprojectmobileapplication.util.StringUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -138,7 +145,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
     private void initListener() {
         mActivityConfirmBookingBinding.imgBack.setOnClickListener(view -> onBackPressed());
-//        mActivityConfirmBookingBinding.btnConfirm.setOnClickListener(view -> onClickBookingMovie());
+        mActivityConfirmBookingBinding.btnConfirm.setOnClickListener(view -> onClickBookingMovie());
     }
 
     private void showListRooms() {
@@ -285,5 +292,167 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
         return timeFirebase;
     }
+
+    private String getTitleRoomSelected(){
+        for(Room room : mListRooms){
+            if(room.isSelected()){
+                mTitleRoomSelected = room.getTitle();
+                break;
+            }
+        }
+
+        return mTitleRoomSelected;
+    }
+
+    private String getTitleTimeSelected(){
+        for(SlotTime slotTime : mListTimes){
+            if(slotTime.isSelected()){
+                mTitleTimeSelected = slotTime.getTitle();
+                break;
+            }
+        }
+
+        return mTitleTimeSelected;
+    }
+
+    //Hàm trả về danh sách các ghế ngồi được click chọn
+    private List<SeatLocal> getListSeatChecked(){
+        List<SeatLocal> listSeatChecked = new ArrayList<>();
+        if(mListSeats != null){
+            for(SeatLocal seat : mListSeats){
+                if(seat.isChecked()){
+                    listSeatChecked.add(seat);
+                }
+            }
+        }
+
+        return listSeatChecked;
+    }
+
+    private Seat getSeatFirebaseFromId(int roomId, int timeId, int seatId){
+        RoomFirebase roomFirebase = getRoomFireBaseFromId(roomId);
+        TimeFirebase timeFirebase = getTimeFirebaseFromId(roomFirebase, timeId);
+
+        Seat seatResult = new Seat();
+        if(timeFirebase.getSeats() != null){
+            for(Seat seat : timeFirebase.getSeats()){
+                if(seat.getId() == seatId){
+                    seatResult = seat;
+                    break;
+                }
+            }
+        }
+
+        return seatResult;
+    }
+
+    //Cập nhật lại trạng thái chọn của các ghế ngồi
+    private void setListSeatUpdate(){
+        for(SeatLocal seatChecked : getListSeatChecked()){
+            getSeatFirebaseFromId(seatChecked.getRoomId(),
+                    seatChecked.getTimeId(), seatChecked.getId()).setSelected(true);
+        }
+    }
+
+    // Hàm kiểm tra dữ liệu trước khi đặt phim: phòng, mốc thời gian, ghế ngồi
+    private void onClickBookingMovie() {
+        if(mMovie == null){
+            return;
+        }
+
+        if(StringUtil.isEmpty(getTitleRoomSelected())){
+            Toast.makeText(this, getString(R.string.msg_select_room_require), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(StringUtil.isEmpty(getTitleTimeSelected())){
+            Toast.makeText(this, getString(R.string.msg_select_time_require), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int countSeat = getListSeatChecked().size();
+        if(countSeat <= 0){
+            Toast.makeText(this, R.string.msg_count_seat, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        setListSeatUpdate();
+
+        showDialogConfirmBooking();
+    }
+
+    private String getStringSeatChecked(){
+        String result = "";
+        List<SeatLocal> listSeatChecked = getListSeatChecked();
+        for(SeatLocal seatLocal : listSeatChecked){
+            if(StringUtil.isEmpty(result)){
+                result = seatLocal.getTitle();
+            }
+            else{
+                result = result + ", " + seatLocal.getTitle();
+            }
+        }
+
+        return result;
+    }
+
+    private int getTotalAmount(){
+        if(mMovie == null){
+            return 0;
+        }
+
+        //Calculate movie booking price
+        int countBooking = 0;
+        try{
+            countBooking = getListSeatChecked().size();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        int priceMovie = countBooking * mMovie.getPrice();
+
+        //Calculate food price:
+    }
+
+    private void showDialogConfirmBooking(){
+        mDialog = new Dialog(this);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.layout_dialog_confirm_booking);
+        Window window = mDialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mDialog.setCancelable(false);
+
+        //Get movie booking view
+        final TextView tvNameMovie = mDialog.findViewById(R.id.tv_name);
+        final TextView tvDateMovie = mDialog.findViewById(R.id.tv_date_movie);
+        final TextView tvRoomMovie = mDialog.findViewById(R.id.tv_room_movie);
+        final TextView tvTimeMovie = mDialog.findViewById(R.id.tv_time_movie);
+        final TextView tvCountBooking = mDialog.findViewById(R.id.tv_count_booking);
+        final TextView tvCountSeat = mDialog.findViewById(R.id.tv_count_seat);
+
+        //Get food, payment method view
+        //...
+
+
+        final TextView tvDialogCancel = mDialog.findViewById(R.id.tv_dialog_cancel);
+        final TextView tvDialogOk = mDialog.findViewById(R.id.tv_dialog_ok);
+
+        //Set data
+        int countView = getListSeatChecked().size();
+
+
+        //
+        tvNameMovie.setText(mMovie.getName());
+        tvDateMovie.setText(mMovie.getDate());
+        tvRoomMovie.setText(getTitleRoomSelected());
+        tvTimeMovie.setText(getTitleTimeSelected());
+        tvCountBooking.setText(String.valueOf(countView));
+        tvCountSeat.setText(getStringSeatChecked());
+
+
+    }
+
 
 }
