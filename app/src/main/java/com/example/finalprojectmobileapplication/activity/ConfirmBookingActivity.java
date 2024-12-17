@@ -25,6 +25,7 @@ import com.example.finalprojectmobileapplication.adapter.RoomAdapter;
 import com.example.finalprojectmobileapplication.adapter.SeatAdapter;
 import com.example.finalprojectmobileapplication.adapter.TimeAdapter;
 import com.example.finalprojectmobileapplication.constant.ConstantKey;
+import com.example.finalprojectmobileapplication.constant.GlobalFunction;
 import com.example.finalprojectmobileapplication.constant.PayPalConfig;
 import com.example.finalprojectmobileapplication.databinding.ActivityConfirmBookingBinding;
 import com.example.finalprojectmobileapplication.listener.IOnSingleClickListener;
@@ -491,6 +492,20 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
 
     private void sendRequestOrder() {
+        mMovie.setBooked(mMovie.getBooked() + Integer.parseInt(mBookingHistory.getCount()));
+        MyApplication.get(ConfirmBookingActivity.this).getMovieDatabaseReference().child(String.valueOf(mMovie.getId())).setValue(mMovie, (error, ref) ->
+            MyApplication.get(ConfirmBookingActivity.this).getBookingDatabaseReference().child(String.valueOf(mBookingHistory.getId()))
+                    .setValue(mBookingHistory, (error1, ref1) -> {
+
+                        updateQuantityFoodDrink();
+
+                        if(mDialog != null) mDialog.dismiss();
+                        finish();
+
+                        Toast.makeText(ConfirmBookingActivity.this, getString(R.string.msg_booking_movie_success), Toast.LENGTH_LONG).show();
+                        GlobalFunction.hideSoftKeyboard(ConfirmBookingActivity.this);
+                    }));
+
     }
 
     private void updateQuantityFoodDrink() {
