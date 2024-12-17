@@ -413,6 +413,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         int priceMovie = countBooking * mMovie.getPrice();
 
         //Calculate food price:
+        return 0;
     }
 
     private void showDialogConfirmBooking(){
