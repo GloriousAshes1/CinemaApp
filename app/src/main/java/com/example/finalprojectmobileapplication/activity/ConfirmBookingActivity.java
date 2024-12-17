@@ -424,7 +424,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         }
 
         setListSeatUpdate();
-
+        System.out.println("here 111");
         showDialogConfirmBooking();
     }
 
@@ -459,8 +459,15 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
         int priceMovie = countBooking * mMovie.getPrice();
 
-        //Calculate food price:
-        return 0;
+        //Calculate food and drink price
+        int priceFoodDrink = 0;
+        List<Food> listFoodSelected = getListFoodSelected();
+        if (!listFoodSelected.isEmpty()) {
+            for (Food food : listFoodSelected) {
+                priceFoodDrink = priceFoodDrink + food.getPrice() * food.getCount();
+            }
+        }
+        return priceMovie + priceFoodDrink;
     }
 
     private void showDialogConfirmBooking() {
@@ -473,7 +480,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         mDialog.setCancelable(false);
 
         //Get movie booking view
-        final TextView tvNameMovie = mDialog.findViewById(R.id.tv_name);
+        final TextView tvNameMovie = mDialog.findViewById(R.id.tv_name_movie);
         final TextView tvDateMovie = mDialog.findViewById(R.id.tv_date_movie);
         final TextView tvRoomMovie = mDialog.findViewById(R.id.tv_room_movie);
         final TextView tvTimeMovie = mDialog.findViewById(R.id.tv_time_movie);
@@ -493,6 +500,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         int countView = getListSeatChecked().size();
         mListFoodNeedUpdate = new ArrayList<>(getListFoodSelected());
 
+//        System.out.println("here");
         //
         tvNameMovie.setText(mMovie.getName());
         tvDateMovie.setText(mMovie.getDate());
@@ -654,19 +662,22 @@ public class ConfirmBookingActivity extends AppCompatActivity {
     }
 
     private void getPaymentPaypal(int price) {
-//    Create paypal payment
+        //Create paypal payment
         PayPalPayment payment = new PayPalPayment(new BigDecimal(String.valueOf(price)),
                 PayPalConfig.PAYPAL_CURRENCY, PayPalConfig.PAYPAl_CONTENT_TEXT,
                 PayPalPayment.PAYMENT_INTENT_SALE);
 
-//    Create Paypal payment activity intent
+        //Create Paypal payment activity intent
         Intent intent = new Intent(this, PaymentActivity.class);
 
-//    Putting the paypal configuration to the intent
+        //Putting the paypal configuration to the intent
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,PAYPAL_CONFIG);
 
-//    Start the activity for result, this will send and receive the request code
-//    Request code will be used in the method onActivityResult
+        //Puting paypal payment to the intent
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+
+        //Start the activity for result, this will send and receive the request code
+        //Request code will be used in the method onActivityResult
         startActivityForResult(intent, PAYPAL_REQUEST_CODE);
 
     }
@@ -678,6 +689,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
             boolean isPaymentSuccess = false;
 
             //If the result is OK i.e. user has not canceled the payment
+            System.out.println("Result Code: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
                 //Getting the payment confirmation
                 PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
