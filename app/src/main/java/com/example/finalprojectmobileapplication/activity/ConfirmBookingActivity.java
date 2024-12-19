@@ -234,13 +234,17 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
     //Hàm hiển thị danh sách các mốc thời gian
     private void showListTimes(int roomId) {
+        //Bật layout hiển thị các mốc giờ để chọn
         mActivityConfirmBookingBinding.layoutSelecteTime.setVisibility(View.VISIBLE);
+
+        //Tắt layout hiển thị ghế ngồi
         mActivityConfirmBookingBinding.layoutSelecteSeat.setVisibility(View.GONE);
 
         // Danh sách các mốc thời gian sẽ được hiển thị dưới dạng lưới và có 2 cột
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mActivityConfirmBookingBinding.rcvTime.setLayoutManager(gridLayoutManager);
 
+        //Lấy ra danh sách các mốc thời gian dựa theo roomId
         mListTimes = getListTimeLocal(roomId);
         mTimeAdapter = new TimeAdapter(mListTimes, this::onClickSelectTime);
         mActivityConfirmBookingBinding.rcvTime.setAdapter(mTimeAdapter);
@@ -258,6 +262,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
     //Hàm hiện thị danh sách các ghế ngồi
     private void showListSeats(SlotTime time) {
+        //Hiển thị layout ghế ngồi để thực hiện chọn
         mActivityConfirmBookingBinding.layoutSelecteSeat.setVisibility(View.VISIBLE);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 6);
         mActivityConfirmBookingBinding.rcvSeat.setLayoutManager(gridLayoutManager);
@@ -277,6 +282,8 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         mSeatAdapter.notifyDataSetChanged();
     }
 
+
+    //Hàm hiển thị ra danh sách các ghế ngồi
     private List<SeatLocal> getListSeatLocal(SlotTime time) {
         RoomFirebase roomFirebase = getRoomFireBaseFromId(time.getRoomId());
         TimeFirebase timeFirebase = getTimeFirebaseFromId(roomFirebase, time.getId());
@@ -287,6 +294,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
                 SeatLocal seatLocal = new SeatLocal(seat.getId(), seat.getTitle(),
                         seat.isSelected(), time.getRoomId(), time.getId());
                 list.add(seatLocal);
+//                System.out.println("Seat's id: " + seatLocal.getId() + ", is checked: " + seatLocal.isChecked());
             }
         }
 
@@ -295,8 +303,8 @@ public class ConfirmBookingActivity extends AppCompatActivity {
 
     // Hàm trả về danh sách các mốc thời gian (danh sách các đối tượng SlotTime)
     private List<SlotTime> getListTimeLocal(int roomId) {
-        //TimeFirebase: là đối tượng được nghĩa làm cấu trúc của 1 object json để lưu xuống firebase
-        //SlotTime: là đối tượng được định nghĩa để thực hiện lưu dữ liệu từ đó đẩy lên view
+        //TimeFirebase: là class được nghĩa làm cấu trúc của 1 object json để lưu xuống firebase
+        //SlotTime: là class được định nghĩa để thực hiện lưu dữ liệu từ đó đẩy lên view
         List<SlotTime> list = new ArrayList<>();
         RoomFirebase roomFirebase = getRoomFireBaseFromId(roomId);
 
@@ -362,7 +370,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         return mTitleTimeSelected;
     }
 
-    //Hàm trả về danh sách các ghế ngồi được click chọn
+    //Hàm trả về danh sách các ghế ngồi được chọn
     private List<SeatLocal> getListSeatChecked(){
         List<SeatLocal> listSeatChecked = new ArrayList<>();
         if(mListSeats != null){
@@ -393,7 +401,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         return seatResult;
     }
 
-    //Cập nhật lại trạng thái chọn của các ghế ngồi
+    //Cập nhật lại trạng thái đặt cúa các ghế đã được chọn
     private void setListSeatUpdate(){
         for(SeatLocal seatChecked : getListSeatChecked()){
             getSeatFirebaseFromId(seatChecked.getRoomId(),
@@ -424,7 +432,6 @@ public class ConfirmBookingActivity extends AppCompatActivity {
         }
 
         setListSeatUpdate();
-        System.out.println("here 111");
         showDialogConfirmBooking();
     }
 
@@ -543,6 +550,9 @@ public class ConfirmBookingActivity extends AppCompatActivity {
     }
 
     private void sendRequestOrder() {
+        //Khi cập nhật dữ liệu xuống database thì cần phải cập nhật xuống 2 object json:
+        //Object movie: Cập nhật lại trạng thái của các ghế ngồi được đặt mua
+        //Object booking: Chứa danh sách các vé đã đặt kèm theo thức ăn, nước uống (nếu có)
         mMovie.setBooked(mMovie.getBooked() + Integer.parseInt(mBookingHistory.getCount()));
         MyApplication.get(ConfirmBookingActivity.this).getMovieDatabaseReference().child(String.valueOf(mMovie.getId())).setValue(mMovie, (error, ref) ->
             MyApplication.get(ConfirmBookingActivity.this).getBookingDatabaseReference().child(String.valueOf(mBookingHistory.getId()))
@@ -606,6 +616,7 @@ public class ConfirmBookingActivity extends AppCompatActivity {
                         mListFood.add(0, food);
                     }
                 }
+//                System.out.println("List food's size: " + mListFood.size());
                 mFoodDrinkAdapter = new FoodDrinkAdapter(mListFood, (food, count) -> selectedCountFoodAndDrink(food, count));
                 mActivityConfirmBookingBinding.rcvFoodDrink.setAdapter(mFoodDrinkAdapter);
             }

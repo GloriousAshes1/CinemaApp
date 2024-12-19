@@ -176,10 +176,39 @@ public class AdminHomeFragment extends Fragment implements View.OnClickListener 
                         return;
                     }
 
-                    MyApplication.get(getActivity()).getMovieDatabaseReference()
-                            .child(String.valueOf(movie.getId())).removeValue((error, ref) -> {
-                                Toast.makeText(getActivity(), getString(R.string.msg_delete_movie_successfully), Toast.LENGTH_SHORT).show();
-                            });
+                    MyApplication.get(getActivity()).getBookingDatabaseReference().addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long bookedMovieId = 0;
+                            boolean isBooked = false;
+
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                bookedMovieId = dataSnapshot.child("movieId").getValue(Long.class);
+                                if(bookedMovieId == movie.getId()){
+                                    isBooked = true;
+                                    Toast.makeText(getActivity(), getString(R.string.movie_booked), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+
+                            if(!isBooked){
+                                MyApplication.get(getActivity()).getMovieDatabaseReference()
+                                        .child(String.valueOf(movie.getId())).removeValue((error, ref) -> {
+                                            Toast.makeText(getActivity(), getString(R.string.msg_delete_movie_successfully), Toast.LENGTH_SHORT).show();
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+//                    MyApplication.get(getActivity()).getMovieDatabaseReference()
+//                            .child(String.valueOf(movie.getId())).removeValue((error, ref) -> {
+//                                Toast.makeText(getActivity(), getString(R.string.msg_delete_movie_successfully), Toast.LENGTH_SHORT).show();
+//                            });
                 })
                 .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();

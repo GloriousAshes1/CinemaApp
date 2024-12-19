@@ -6,8 +6,8 @@ public class SeatLocal implements Serializable {
 
     private int id;
     private String title;
-    private boolean selected;
-    private boolean checked;
+    private boolean selected;           //Trạng thái ghế được đặt
+    private boolean checked;            //Trạng thái ghế được chọn
     private int roomId;
     private int timeId;
 

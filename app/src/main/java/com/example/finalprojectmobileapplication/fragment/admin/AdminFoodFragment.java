@@ -105,10 +105,39 @@ public class AdminFoodFragment extends Fragment {
                         return;
                     }
 
-                    MyApplication.get(getActivity()).getFoodDatabaseReference()
-                            .child(String.valueOf(food.getId())).removeValue((error, ref) -> {
-                                Toast.makeText(getActivity(), getString(R.string.msg_delete_food_successfully), Toast.LENGTH_SHORT).show();
-                            });
+                    MyApplication.get(getActivity()).getBookingDatabaseReference().addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String foods = "";
+                            boolean isBooked = false;
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                foods = dataSnapshot.child("foods").getValue(String.class);
+                                if(foods.contains(food.getName())){
+                                    isBooked = true;
+                                    Toast.makeText(getActivity(), getString(R.string.food_booked), Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
+
+                            if(!isBooked){
+                                MyApplication.get(getActivity()).getFoodDatabaseReference()
+                                        .child(String.valueOf(food.getId())).removeValue((error, ref) -> {
+                                            Toast.makeText(getActivity(), getString(R.string.msg_delete_food_successfully), Toast.LENGTH_SHORT).show();
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+//                    MyApplication.get(getActivity()).getFoodDatabaseReference()
+//                            .child(String.valueOf(food.getId())).removeValue((error, ref) -> {
+//                                Toast.makeText(getActivity(), getString(R.string.msg_delete_food_successfully), Toast.LENGTH_SHORT).show();
+//                            });
                 })
                 .setNegativeButton(getString(R.string.action_cancel), null)
                 .show();
