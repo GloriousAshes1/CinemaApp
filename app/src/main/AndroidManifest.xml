@@ -39,6 +39,9 @@
             android:name=".activity.admin.AdminMainActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.admin.AdminRevenueActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ForgotPasswordActivity"
             android:exported="false" />
         <activity
