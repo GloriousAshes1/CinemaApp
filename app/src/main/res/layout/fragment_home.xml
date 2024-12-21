@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="153dp"
                 android:layout_marginStart="@dimen/define_dimen_10"
-                android:layout_marginEnd="@dimen/define_dimen_10" />
+                android:layout_marginEnd="@dimen/define_dimen_10"/>
 
             <me.relex.circleindicator.CircleIndicator3
                 android:id="@+id/indicator_3"
@@ -86,7 +86,7 @@
                 android:layout_marginStart="@dimen/define_dimen_10"
                 android:layout_marginBottom="@dimen/define_dimen_10"
                 android:focusable="false"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
                 android:text="@string/label_all_movies"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/text_size_normal"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_movie"

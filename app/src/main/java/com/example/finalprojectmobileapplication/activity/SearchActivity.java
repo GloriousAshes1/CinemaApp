@@ -54,7 +54,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mActivitySearchBinding.imageDelete.setOnClickListener(view -> mActivitySearchBinding.edtKeyword.setText(""));
         mActivitySearchBinding.edtKeyword.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//                searchMovie();
+                searchMovie();
                 return true;
             }
             return false;
@@ -115,7 +115,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     textView.setBackgroundResource(R.drawable.bg_white_shape_round_corner_border_red);
                     textView.setTextColor(getResources().getColor(R.color.red));
                     // show movies
-//                    searchMovie();
+                    searchMovie();
                 } else {
                     textView.setBackgroundResource(R.drawable.bg_white_shape_round_corner_border_grey);
                     textView.setTextColor(getResources().getColor(R.color.colorPrimary));
