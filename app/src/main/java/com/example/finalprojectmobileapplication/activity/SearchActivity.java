@@ -1,16 +1,14 @@
 package com.example.finalprojectmobileapplication.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.finalprojectmobileapplication.MyApplication;
@@ -30,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener {
+
     private ActivitySearchBinding mActivitySearchBinding;
     private List<Category> mListCategory;
     private Category mCategorySelected;
@@ -40,18 +39,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         mActivitySearchBinding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(mActivitySearchBinding.getRoot());
-        
+
         initListener();
         getListCategory();
-
     }
 
     private void initListener() {
-        mActivitySearchBinding.imageBack.setOnClickListener(view -> {
+        mActivitySearchBinding.imageBack.setOnClickListener(v -> {
             GlobalFunction.hideSoftKeyboard(SearchActivity.this);
             onBackPressed();
         });
-        mActivitySearchBinding.imageDelete.setOnClickListener(view -> mActivitySearchBinding.edtKeyword.setText(""));
+        mActivitySearchBinding.imageDelete.setOnClickListener(v -> mActivitySearchBinding.edtKeyword.setText(""));
         mActivitySearchBinding.edtKeyword.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchMovie();
@@ -59,13 +57,31 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
             return false;
         });
+        mActivitySearchBinding.edtKeyword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    mActivitySearchBinding.imageDelete.setVisibility(View.VISIBLE);
+                } else {
+                    mActivitySearchBinding.imageDelete.setVisibility(View.GONE);
+                    searchMovie();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     private void getListCategory() {
         MyApplication.get(this).getCategoryDatabaseReference().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // This is called whenever the data changes or is first loaded
                 mActivitySearchBinding.tvCategoryTitle.setVisibility(View.VISIBLE);
                 mActivitySearchBinding.layoutCategory.setVisibility(View.VISIBLE);
 
@@ -108,13 +124,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 textView.setPadding(30, 10, 30, 10);
                 textView.setTag(String.valueOf(category.getId()));
                 textView.setText(category.getName());
-
-                // show which movies belong to the specific category
                 if (tag.equals(String.valueOf(category.getId()))) {
                     mCategorySelected = category;
                     textView.setBackgroundResource(R.drawable.bg_white_shape_round_corner_border_red);
                     textView.setTextColor(getResources().getColor(R.color.red));
-                    // show movies
                     searchMovie();
                 } else {
                     textView.setBackgroundResource(R.drawable.bg_white_shape_round_corner_border_grey);
@@ -127,26 +140,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
     }
-
-    private boolean isMovieResult(Movie movie) {
-        if (movie == null) {
-            return false;
-        }
-        String key = mActivitySearchBinding.edtKeyword.getText().toString().trim();
-        long categoryId = mCategorySelected.getId();
-        if (StringUtil.isEmpty(key)) {
-            if (categoryId == 0) {
-                return true;
-            } else return movie.getCategoryId() == categoryId;
-        } else {
-            boolean isMatch = GlobalFunction.getTextSearch(movie.getName()).toLowerCase().trim()
-                    .contains(GlobalFunction.getTextSearch(key).toLowerCase().trim());
-            if (categoryId == 0) {
-                return isMatch;
-            } else return isMatch && movie.getCategoryId() == categoryId;
-        }
-    }
-
 
     private void searchMovie() {
         MyApplication.get(this).getMovieDatabaseReference().addValueEventListener(new ValueEventListener() {
@@ -180,13 +173,27 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mActivitySearchBinding.rcvData.setAdapter(movieAdapter);
     }
 
-    @Override
-    public void onClick(View view) {
-
+    private boolean isMovieResult(Movie movie) {
+        if (movie == null) {
+            return false;
+        }
+        String key = mActivitySearchBinding.edtKeyword.getText().toString().trim();
+        long categoryId = mCategorySelected.getId();
+        if (StringUtil.isEmpty(key)) {
+            if (categoryId == 0) {
+                return true;
+            } else return movie.getCategoryId() == categoryId;
+        } else {
+            boolean isMatch = GlobalFunction.getTextSearch(movie.getName()).toLowerCase().trim()
+                    .contains(GlobalFunction.getTextSearch(key).toLowerCase().trim());
+            if (categoryId == 0) {
+                return isMatch;
+            } else return isMatch && movie.getCategoryId() == categoryId;
+        }
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
+    public void onClick(View v) {
+        initLayoutCategory(v.getTag().toString());
     }
 }
