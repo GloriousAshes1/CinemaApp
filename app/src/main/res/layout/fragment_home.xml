@@ -58,14 +58,14 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager_2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="153dp"
                 android:layout_marginStart="@dimen/define_dimen_10"
                 android:layout_marginEnd="@dimen/define_dimen_10" />
 
             <me.relex.circleindicator.CircleIndicator3
                 android:id="@+id/indicator_3"
                 android:layout_width="wrap_content"
-                android:layout_height="29dp"
+                android:layout_height="25dp"
                 android:layout_gravity="center"
                 app:ci_drawable="@drawable/bg_indicatior_selected"
                 app:ci_drawable_unselected="@drawable/bg_indicatior_unselected" />

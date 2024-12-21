@@ -46,6 +46,9 @@ public class BannerMovieAdapter extends RecyclerView.Adapter<BannerMovieAdapter.
 
     @Override
     public int getItemCount() {
+        if (mListMovies != null) {
+            return mListMovies.size();
+        }
         return 0;
     }
     public static class BannerMovieViewHolder extends RecyclerView.ViewHolder {

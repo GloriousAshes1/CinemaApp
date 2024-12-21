@@ -50,6 +50,8 @@ public class HomeFragment extends Fragment {
             if (mListMovieBanner == null || mListMovieBanner.isEmpty()){
                 return;
             }
+            // current item is the last item, resets position to first item
+            // this is used for scrolling in the banner
             if (mFragmentHomeBinding.viewPager2.getCurrentItem() == mListMovieBanner.size() -1){
                 mFragmentHomeBinding.viewPager2.setCurrentItem(0);
                 return;

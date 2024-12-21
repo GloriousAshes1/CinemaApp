@@ -100,12 +100,12 @@ public class GlobalFunction {
 
     public static List<RoomFirebase> getListRooms() {
         List<RoomFirebase> list = new ArrayList<>();
-        list.add(new RoomFirebase(1, "Phòng 1", getListTimes()));
-        list.add(new RoomFirebase(2, "Phòng 2", getListTimes()));
-        list.add(new RoomFirebase(3, "Phòng 3", getListTimes()));
-        list.add(new RoomFirebase(4, "Phòng 4", getListTimes()));
-        list.add(new RoomFirebase(5, "Phòng 5", getListTimes()));
-        list.add(new RoomFirebase(6, "Phòng 6", getListTimes()));
+        list.add(new RoomFirebase(1, "Room 1", getListTimes()));
+        list.add(new RoomFirebase(2, "Room 2", getListTimes()));
+        list.add(new RoomFirebase(3, "Room 3", getListTimes()));
+        list.add(new RoomFirebase(4, "Room 4", getListTimes()));
+        list.add(new RoomFirebase(5, "Room 5", getListTimes()));
+        list.add(new RoomFirebase(6, "Room 6", getListTimes()));
         return list;
     }
 
