@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddCategoryActivity extends BaseActivity {
 
@@ -63,15 +65,20 @@ public class AddCategoryActivity extends BaseActivity {
     private void addOrEditCategory(){
         String strName = activityAddCategoryBinding.edtName.getText().toString().trim();
         String strImage = activityAddCategoryBinding.edtImage.getText().toString().trim();
+        String regex = "^[a-zA-Z0-9 -]*$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(strName);
 
         if(StringUtil.isEmpty(strName)){
             Toast.makeText(this, getString(R.string.msg_name_category_require), Toast.LENGTH_SHORT).show();
         }
-
+        else if(!matcher.matches()){
+            Toast.makeText(this, getString(R.string.msg_special_char_category_name), Toast.LENGTH_SHORT).show();
+        }
         else if(StringUtil.isEmpty(strImage)){
             Toast.makeText(this, getString(R.string.msg_image_category_require), Toast.LENGTH_SHORT).show();
         }
-
         else{
             DatabaseReference categoryRef = MyApplication.get(this).getCategoryDatabaseReference();
 

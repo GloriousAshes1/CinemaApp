@@ -169,11 +169,18 @@
     <string name="msg_duplicate_food_name">Already existed a food/drink with the same name</string>
     <string name="msg_duplicate_movie_name">Already existed a movie with the same name</string>
     <string name="ticket_price">100 000 VND / 1 ticket</string>
-    <string name="minimum_price">The total amount of money must be equal or above 20 000 VND</string>
-    <string name="minimum_quantity">The quantity must be greater than 0</string>
+    <string name="minimum_price">The minimum price must be equal or above 20 000 VND</string>
+    <string name="minimum_quantity">The minimum quantity must be greater than 0</string>
     <string name="category_with_movie">Unable to delete this category because there are movies belong to this category</string>
     <string name="food_booked">Unable to delete this food because it was ordered</string>
     <string name="movie_booked">Unable to delete this movie because it was booked</string>
+
+    <string name="msg_special_char_category_name">Category name must not contain special characters</string>
+    <string name="msg_special_char_food_drink_name">Food/drink name must not contain special characters</string>
+    <string name="maximum_price">The maximum price must be less than 1 000 000 VND</string>
+    <string name="maximum_quantity">The maximum quantity must be less than 10 000</string>
+    <string name="msg_special_char_movie_name">Movie name must not contain special characters</string>
+
 
     <string name="new_nav_home">Home</string>
     <string name="new_nav_booking_history">Booking History</string>

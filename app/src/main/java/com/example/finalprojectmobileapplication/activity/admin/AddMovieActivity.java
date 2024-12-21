@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddMovieActivity extends BaseActivity {
 
@@ -53,6 +55,7 @@ public class AddMovieActivity extends BaseActivity {
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         movieId = dataSnapshot.child("movieId").getValue(Long.class);
                         if(movieId == movie.getId()){
+                            activityAddMovieBinding.edtName.setEnabled(false);
                             activityAddMovieBinding.tvDate.setEnabled(false);
                             activityAddMovieBinding.edtPrice.setEnabled(false);
                             break;
@@ -166,6 +169,10 @@ public class AddMovieActivity extends BaseActivity {
         String strImage = activityAddMovieBinding.edtImage.getText().toString().trim();
         String strImageBanner = activityAddMovieBinding.edtImageBanner.getText().toString().trim();
         String strVideo = activityAddMovieBinding.edtVideo.getText().toString().trim();
+        String regex = "^[a-zA-Z0-9 -]*$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(strName);
 
         if(categorySelected == null || categorySelected.getId() < 0){
             Toast.makeText(this, getString(R.string.msg_category_movie_require), Toast.LENGTH_SHORT).show();
@@ -173,6 +180,9 @@ public class AddMovieActivity extends BaseActivity {
 
         else if(StringUtil.isEmpty(strName)){
             Toast.makeText(this, getString(R.string.msg_name_movie_require), Toast.LENGTH_SHORT).show();
+        }
+        else if(!matcher.matches()){
+            Toast.makeText(this, getString(R.string.msg_special_char_movie_name), Toast.LENGTH_SHORT).show();
         }
 
         else if (StringUtil.isEmpty(strDescription)) {
@@ -185,6 +195,10 @@ public class AddMovieActivity extends BaseActivity {
 
         else if(Integer.parseInt(strPrice) == 0){
             Toast.makeText(this, getString(R.string.minimum_price), Toast.LENGTH_SHORT).show();
+        }
+
+        else if(Integer.parseInt(strPrice) >= 1000){
+            Toast.makeText(this, getString(R.string.maximum_price), Toast.LENGTH_SHORT).show();
         }
 
         else if (StringUtil.isEmpty(strDate)) {

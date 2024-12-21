@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddFoodActivity extends BaseActivity {
 
@@ -37,6 +39,29 @@ public class AddFoodActivity extends BaseActivity {
         if(bundleReceived != null){
            isUpdate = true;
            food = (Food) bundleReceived.get(ConstantKey.KEY_INTENT_FOOD_OBJECT);
+
+            MyApplication.get(this).getBookingDatabaseReference().addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    boolean isBooked = false;
+                    String foods = "";
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        foods = dataSnapshot.child("foods").getValue(String.class);
+                        if(foods.trim().contains(food.getName())){
+                            activityAddFoodBinding.edtName.setEnabled(false);
+                            activityAddFoodBinding.edtPrice.setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
         }
 
         initView();
@@ -64,8 +89,16 @@ public class AddFoodActivity extends BaseActivity {
         String strPrice = activityAddFoodBinding.edtPrice.getText().toString().trim();
         String strQuantity = activityAddFoodBinding.edtQuantity.getText().toString().trim();
 
+        String regex = "^[a-zA-Z0-9 -]*$";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(strName);
+
         if(StringUtil.isEmpty(strName)){
             Toast.makeText(this, getString(R.string.msg_name_food_require), Toast.LENGTH_SHORT).show();
+        }
+        else if(!matcher.matches()){
+            Toast.makeText(this, getString(R.string.msg_special_char_food_drink_name), Toast.LENGTH_SHORT).show();
         }
         else if(StringUtil.isEmpty(strPrice)){
             Toast.makeText(this, getString(R.string.msg_price_food_require), Toast.LENGTH_SHORT).show();
@@ -73,11 +106,17 @@ public class AddFoodActivity extends BaseActivity {
         else if(Integer.parseInt(strPrice) < 20){
             Toast.makeText(this, getString(R.string.minimum_price), Toast.LENGTH_SHORT).show();
         }
+        else if(Integer.parseInt(strPrice) >= 1000){
+            Toast.makeText(this, getString(R.string.maximum_price), Toast.LENGTH_SHORT).show();
+        }
         else if(StringUtil.isEmpty(strQuantity)){
             Toast.makeText(this, getString(R.string.msg_quantity_food_require), Toast.LENGTH_SHORT).show();
         }
         else if(Integer.parseInt(strQuantity) == 0){
             Toast.makeText(this, getString(R.string.minimum_quantity), Toast.LENGTH_SHORT).show();
+        }
+        else if(Integer.parseInt(strQuantity) >= 10000){
+            Toast.makeText(this, getString(R.string.maximum_quantity), Toast.LENGTH_SHORT).show();
         }
         else{
             DatabaseReference foodRef = MyApplication.get(this).getFoodDatabaseReference();
