@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/img_category"
             android:layout_width="@dimen/define_dimen_120"
-            android:layout_height="@dimen/define_dimen_80"
+            android:layout_height="@dimen/define_dimen_120"
             android:scaleType="centerCrop"
             tools:ignore="ContentDescription" />
 

@@ -11,7 +11,15 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="18dp">
+        android:padding="@dimen/define_dimen_18">
+
+        <ImageView
+            android:id="@+id/img_app_logo"
+            android:layout_width="@dimen/define_dimen_150"
+            android:layout_height="@dimen/define_dimen_150"
+            android:src="@drawable/movie_ticket_logo"
+            android:layout_marginBottom="@dimen/define_dimen_50"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,14 +61,14 @@
                 android:id="@+id/rdb_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Admin" />
+                android:text="@string/admin" />
 
             <RadioButton
                 android:id="@+id/rdb_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/define_dimen_20"
-                android:text="User" />
+                android:text="@string/user" />
         </RadioGroup>
         <Button
             android:id="@+id/btn_login"

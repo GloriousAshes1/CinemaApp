@@ -35,4 +35,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="xam2">#393838</color>
+
+    <color name="white_gray">#d9d9d9</color>
 </resources>

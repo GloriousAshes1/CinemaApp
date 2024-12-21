@@ -36,7 +36,7 @@
     <string name="hint_image">Image link…</string>
     <string name="hint_image_banner">Banner link…</string>
     <string name="hint_url">Video link…</string>
-    <string name="hint_date">Release date…</string>
+    <string name="hint_date">End date…</string>
 
     <string name="waiting_message">Please wait…</string>
     <string name="sign_in_user">User Sign In</string>
@@ -51,7 +51,7 @@
     <string name="edit_food_title">Edit Food/Drink</string>
     <string name="currency">000 VNĐ</string>
     <string name="currency_movie">000 VNĐ / 1 ticket</string>
-    <string name="date_movie">Release date:</string>
+    <string name="date_movie">End date:</string>
     <string name="price_movie">Ticket price:</string>
     <string name="name_movie">Movie name:</string>
     <string name="room_movie">Movie room:</string>

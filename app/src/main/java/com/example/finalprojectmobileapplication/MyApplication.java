@@ -22,10 +22,10 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("MY_PREFERENCES", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+//        SharedPreferences sharedPreferences = getSharedPreferences("MY_PREFERENCES", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.clear();
+//        editor.apply();
 
         DataStoreManager.init(getApplicationContext());
         FirebaseApp.initializeApp(this);

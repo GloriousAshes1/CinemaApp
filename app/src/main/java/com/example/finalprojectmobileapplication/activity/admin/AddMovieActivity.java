@@ -45,6 +45,26 @@ public class AddMovieActivity extends BaseActivity {
         if(bundleReceived != null){
             isUpdate = true;
             movie = (Movie) bundleReceived.get(ConstantKey.KEY_INTENT_MOVIE_OBJECT);
+
+            MyApplication.get(this).getBookingDatabaseReference().addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    long movieId = 0;
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        movieId = dataSnapshot.child("movieId").getValue(Long.class);
+                        if(movieId == movie.getId()){
+                            activityAddMovieBinding.tvDate.setEnabled(false);
+                            activityAddMovieBinding.edtPrice.setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
         initView();
